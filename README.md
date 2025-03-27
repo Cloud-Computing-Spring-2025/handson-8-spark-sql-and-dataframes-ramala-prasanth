@@ -62,6 +62,15 @@ SocialMediaSentimentAnalysis/
 - **docker-compose.yml**: Docker Compose configuration file to set up Spark.
 - **README.md**: Assignment instructions and guidelines.
 
+
+
+---
+
+# Note
+To generate the dataset execute `sudo python input_generator.py` in order for the system to overwrite the permissions.
+
+---
+
 ### **2. Running the Analysis Tasks**
 
 You can run the analysis tasks either locally or using Docker.
@@ -89,44 +98,6 @@ You can run the analysis tasks either locally or using Docker.
    ls outputs/
    ```
 
-#### **b. Running with Docker (Optional)**
-
-1. **Start the Spark Cluster**:
-   ```bash
-   docker-compose up -d
-   ```
-
-2. **Access the Spark Master Container**:
-   ```bash
-   docker exec -it spark-master bash
-   ```
-
-3. **Navigate to the Spark Directory**:
-   ```bash
-   cd /opt/bitnami/spark/
-   ```
-
-4. **Run Your PySpark Scripts Using `spark-submit`**:
-   ```bash
-   
-   spark-submit src/task1_hashtag_trends.py
-   spark-submit src/task2_engagement_by_age.py
-   spark-submit src/task3_sentiment_vs_engagement.py
-   spark-submit src/task4_top_verified_users.py
-   ```
-
-5. **Exit the Container**:
-   ```bash
-   exit
-   ```
-
-6. **Verify the Outputs**:
-   On your host machine, check the `outputs/` directory for the resulting files.
-
-7. **Stop the Spark Cluster**:
-   ```bash
-   docker-compose down
-   ```
 
 ## **Overview**
 
@@ -140,62 +111,73 @@ By the end of this assignment, you should be able to:
 2. **Data Analysis**: Perform complex queries and transformations to address specific business questions.
 3. **Insight Generation**: Derive actionable insights from the analyzed data.
 
-## **Dataset**
 
-## **Dataset: posts.csv **
+# Dataset Generation Script
 
-You will work with a dataset containing information about **100+ users** who rated movies across various streaming platforms. The dataset includes the following columns:
+## Overview
+This script generates two CSV files, `users.csv` and `posts.csv`, in the `input/` directory. These datasets are designed for social media analytics, allowing analysis of user engagement, sentiment trends, and hashtag popularity.
 
-| Column Name     | Type    | Description                                           |
-|-----------------|---------|-------------------------------------------------------|
-| PostID          | Integer | Unique ID for the post                                |
-| UserID          | Integer | ID of the user who posted                             |
-| Content         | String  | Text content of the post                              |
-| Timestamp       | String  | Date and time the post was made                       |
-| Likes           | Integer | Number of likes on the post                           |
-| Retweets        | Integer | Number of shares/retweets                             |
-| Hashtags        | String  | Comma-separated hashtags used in the post             |
-| SentimentScore  | Float   | Sentiment score (-1 to 1, where -1 is most negative)  |
+## Files Generated
+### 1. `users.csv`
+Contains details about users, including their age group, country, and verification status.
 
+**Columns:**
+- `UserID` (Integer): Unique identifier for each user.
+- `Username` (String): Social media handle.
+- `AgeGroup` (String): User's age category (`Teen`, `Adult`, `Senior`).
+- `Country` (String): Country of the user.
+- `Verified` (Boolean): Whether the user is verified (`True` or `False`).
 
----
+### 2. `posts.csv`
+Contains details of user posts, including engagement metrics and sentiment scores.
 
-## **Dataset: users.csv **
-| Column Name | Type    | Description                          |
-|-------------|---------|--------------------------------------|
-| UserID      | Integer | Unique user ID                       |
-| Username    | String  | User's handle                        |
-| AgeGroup    | String  | Age category (Teen, Adult, Senior)   |
-| Country     | String  | Country of residence                 |
-| Verified    | Boolean | Whether the account is verified      |
+**Columns:**
+- `PostID` (Integer): Unique identifier for each post.
+- `UserID` (Integer): ID linking the post to a user in `users.csv`.
+- `Content` (String): The text content of the post.
+- `Timestamp` (Datetime): When the post was made.
+- `Likes` (Integer): Number of likes on the post.
+- `Retweets` (Integer): Number of retweets/shares.
+- `Hashtags` (String): Comma-separated hashtags used in the post.
+- `SentimentScore` (Float): Sentiment analysis score (-1 to 1), where positive values indicate positive sentiment, and negative values indicate negative sentiment.
 
----
+## Data Generation
+- **User data:** 10 randomly generated users with varied age groups, countries, and verification statuses.
+- **Post data:** 100 randomly generated posts, each associated with a user. Each post includes engagement metrics, hashtags, and sentiment scores.
+- **Hashtags and content:** Randomly selected from predefined lists to simulate real-world diversity in social media posts.
+- **Engagement metrics:** Likes and retweets are assigned random values to represent varying levels of popularity.
+- **Sentiment scores:** Random float values between -1 and 1 are assigned to posts to analyze sentiment trends.
 
-### **Sample Data**
+## Usage
+1. Run the script to generate the datasets:
+   ```bash
+   python generate_dataset.py
+   ```
+2. The generated CSV files will be stored in the `input/` directory.
+3. Use these datasets for data analysis tasks such as:
+   - Identifying trending hashtags
+   - Measuring engagement by age group
+   - Exploring sentiment impact on user interactions
+   - Finding top influencers based on engagement
 
-Below is a snippet of the `posts.csv`,`users.csv` to illustrate the data structure. Ensure your dataset contains at least 100 records for meaningful analysis.
+## Output Example
+### Sample `users.csv`
+| UserID | Username     | AgeGroup | Country | Verified |
+|--------|------------|----------|---------|----------|
+| 1      | @techie42  | Adult    | US      | True     |
+| 2      | @critic99  | Senior   | UK      | False    |
+| 3      | @daily_vibes | Teen   | India   | False    |
 
-```
-PostID,UserID,Content,Timestamp,Likes,Retweets,Hashtags,SentimentScore
-101,1,"Loving the new update! #tech #innovation","2023-10-05 14:20:00",120,45,"#tech,#innovation",0.8
-102,2,"This app keeps crashing. Frustrating! #fail","2023-10-05 15:00:00",5,1,"#fail",-0.7
-103,3,"Just another day... #mood","2023-10-05 16:30:00",15,3,"#mood",0.0
-104,4,"Absolutely love the UX! #design #cleanUI","2023-10-06 09:10:00",75,20,"#design,#cleanUI",0.6
-105,5,"Worst experience ever. Fix it. #bug","2023-10-06 10:45:00",2,0,"#bug",-0.9
-```
+### Sample `posts.csv`
+| PostID | UserID | Content                     | Timestamp           | Likes | Retweets | Hashtags       | SentimentScore |
+|--------|--------|----------------------------|---------------------|-------|----------|---------------|---------------|
+| 101    | 1      | Loving the new update!     | 2023-10-05 14:20:00 | 120   | 45       | #tech,#AI     | 0.8           |
+| 102    | 2      | This app keeps crashing.  | 2023-10-05 15:00:00 | 5     | 1        | #fail         | -0.7          |
+| 103    | 3      | Just another day...        | 2023-10-05 16:30:00 | 15    | 3        | #mood         | 0.0           |
 
----
-
-```
-UserID,Username,AgeGroup,Country,Verified
-1,@techie42,Adult,US,True
-2,@critic99,Senior,UK,False
-3,@daily_vibes,Teen,India,False
-4,@designer_dan,Adult,Canada,True
-5,@rage_user,Adult,US,False
-```
-
----
+## Notes
+- Ensure that at least 100 records are generated for meaningful analysis.
+- The dataset structure is designed for easy integration with Apache Spark-based analysis workflows.
 
 
 
@@ -313,13 +295,13 @@ A leaderboard of verified users based on audience engagement.
 
 ## 📬 Submission Checklist
 
-- [ ] PySpark scripts in the `src/` directory  
-- [ ] Output files in the `outputs/` directory  
-- [ ] Datasets in the `input/` directory  
-- [ ] Completed `README.md`  
-- [ ] Commit everything to GitHub Classroom  
-- [ ] Submit your GitHub repo link on canvas
+- [✅] PySpark scripts in the `src/` directory  
+- [✅] Output files in the `outputs/` directory  
+- [✅] Datasets in the `input/` directory  
+- [✅] Completed `README.md`  
+- [✅] Commit everything to GitHub Classroom  
+- [✅] Submit your GitHub repo link on canvas
 
 ---
 
-Now go uncover the trends behind the tweets 📊🐤✨
+

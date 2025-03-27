@@ -1,0 +1,11 @@
+UserID,Username,AgeGroup,Country,Verified
+0,@techie42,Teen,UK,True
+1,@critic99,Teen,India,False
+2,@daily_vibes,Teen,Germany,False
+3,@designer_dan,Senior,India,False
+4,@rage_user,Senior,Germany,False
+5,@meme_lord,Adult,India,True
+6,@social_queen,Adult,Brazil,True
+7,@calm_mind,Senior,Canada,True
+8,@pixel_pusher,Adult,India,True
+9,@stream_bot,Teen,UK,True
